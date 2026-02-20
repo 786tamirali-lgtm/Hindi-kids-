@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tamir Ali · Hindi Lab (सभी स्वर)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Nirmala UI', 'Arial', sans-serif;
+            background: #e3f2fd;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        /* ===== DISPLAY SECTION ===== */
+        .display-section {
+            height: 30%;
+            background: #fff8e1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 6px solid #f57c00;
+            box-shadow: 0 4px 12px #ffb74d;
+            padding: 5px 10px;
+        }
+
+        #output {
+            font-size: min(14vw, 100px);
+            font-weight: 800;
+            color: #b71c1c;
+            min-height: 120px;
+            text-shadow: 3px 3px 0 #ffccbc;
+            line-height: 1.4;
+            margin: 0 0 8px 0;
+            font-family: 'Nirmala UI', 'Kokila', 'Arial';
+            word-break: break-word;
+            text-align: center;
+            max-width: 100%;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 40px;
+            padding: 15px 10px;
+            border: 3px solid #ffb300;
+            box-shadow: inset 0 2px 8px #ffe082;
+            overflow-y: auto;
+            max-height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 5px;
+            width: 100%;
+        }
+
+        .clear-btn, .backspace-btn, .speak-icon-btn {
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #7f5f5f;
+            transition: 0.04s linear;
+            touch-action: manipulation;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid white;
+            flex: 0 1 auto;
+        }
+
+        .clear-btn { background: #ff7043; color: white; box-shadow: 0 5px 0 #bf3600; }
+        .backspace-btn { background: #fbc02d; color: #1f2e3a; box-shadow: 0 5px 0 #b08d00; }
+        .speak-icon-btn { background: #2e7d32; color: white; box-shadow: 0 5px 0 #1b5e20; }
+
+        .clear-btn:active, .backspace-btn:active, .speak-icon-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #7f5f5f;
+        }
+
+        /* ===== KEYBOARD SECTION ===== */
+        .keyboard-section {
+            height: 70%;
+            display: flex;
+            overflow: hidden;
+            background: #bbdefb;
+            border-top: 4px solid #ffb300;
+        }
+
+        /* Left: स्वर + मात्राएँ */
+        .matra-col {
+            width: 35%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 10px 5px;
+            overflow-y: auto;
+            background: #ffe0b2;
+            border-right: 4px solid #e65100;
+        }
+
+        .matra-col h3, .varna-col h3 {
+            margin: 0 0 8px 0;
+            font-size: 18px;
+            text-align: center;
+            background: #ffb74d;
+            padding: 8px 0;
+            border-radius: 40px;
+            color: #1b2b40;
+            border: 2px solid #bf360c;
+            flex-shrink: 0;
+        }
+
+        /* Right: व्यंजन */
+        .varna-col {
+            width: 65%;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            padding: 10px 6px;
+            overflow-y: auto;
+            background: #e1f0fa;
+        }
+
+        .key {
+            padding: 16px 2px;
+            font-size: 32px;
+            font-weight: 700;
+            border: none;
+            border-radius: 24px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #7f8c8d, 0 5px 12px rgba(0,0,0,0.2);
+            text-align: center;
+            transition: 0.04s linear;
+            touch-action: manipulation;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Nirmala UI', 'Kokila', 'Arial';
+            background: white;
+        }
+
+        .key:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #6f7c7d, 0 5px 10px rgba(0,0,0,0.1);
+        }
+
+        .varna-btn {
+            background: white;
+            color: #0d3f66;
+            border: 2px solid #90caf9;
+        }
+
+        .matra-btn {
+            background: #ff9800;
+            color: white;
+            text-shadow: 2px 2px 0 #b26a00;
+            font-size: 36px;
+            border: 2px solid #ffe082;
+        }
+
+        .matra-sub {
+            font-size: 14px;
+            margin-left: 5px;
+            background: #4527a0;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 30px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .footer-note {
+            font-size: 14px;
+            color: #01579b;
+            text-align: center;
+            padding: 3px;
+            background: #fff9c4;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="display-section">
+    <div id="output">क</div>
+    <div class="action-btns">
+        <button class="clear-btn" onclick="clearAll()">🗑️ सब मिटाओ</button>
+        <button class="backspace-btn" onclick="backspace()">⌫ एक मिटाओ</button>
+        <button class="speak-icon-btn" onclick="speakCurrent()"><span>🔊</span> बोलो</button>
+    </div>
+</div>
+
+<div class="keyboard-section">
+    <!-- बायाँ: सभी स्वर (अ, आ, इ, ई, उ, ऊ, ऋ, ए, ऐ, ओ, औ) + मात्राएँ -->
+    <div class="matra-col">
+        <h3>✨ स्वर (Vowels) ✨</h3>
+        
+        <!-- स्वर (सीधे जुड़ेंगे) -->
+        <button class="key matra-btn" onclick="addSwarToWord('अ')">अ<span class="matra-sub">a</span></button>
+        <button class="key matra-btn" onclick="addSwarToWord('आ')">आ<span class="matra-sub">aa</span></button>
+        <button class="key matra-btn" onclick="addSwarToWord('इ')">इ<span class="matra-sub">i</span></button>
+        <button class="key matra-btn" onclick="addSwarToWord('ई')">ई<span class="matra-sub">ee</span></button>
+        <button class="key matra-btn" onclick="addSwarToWord('उ')">उ<span class="matra-sub">u</span></button>
+        <button class="key matra-btn" onclick="addSwarToWord('ऊ')">ऊ<span class="matra-sub">oo</span></button>
+        <button class="key matra-btn" onclick="addSwarToWord('ऋ')">ऋ<span class="matra-sub">ri</span></button>
+        <button class="key matra-btn" onclick="addSwarToWord('ए')">ए<span class="matra-sub">e</span></button>
+        <button class="key matra-btn" onclick="addSwarToWord('ऐ')">ऐ<span class="matra-sub">ai</span></button>
+        <button class="key matra-btn" onclick="addSwarToWord('ओ')">ओ<span class="matra-sub">o</span></button>
+        <button class="key matra-btn" onclick="addSwarToWord('औ')">औ<span class="matra-sub">au</span></button>
+        
+        <h3 style="margin-top: 10px;">✨ मात्राएँ ✨</h3>
+        
+        <!-- मात्राएँ -->
+        <button class="key matra-btn" data-matra="" onclick="addToWord(this)">्<span class="matra-sub">halant</span></button>
+        <button class="key matra-btn" data-matra="ा" onclick="addToWord(this)">ा<span class="matra-sub">आ</span></button>
+        <button class="key matra-btn" data-matra="ि" onclick="addToWord(this)">ि<span class="matra-sub">इ</span></button>
+        <button class="key matra-btn" data-matra="ी" onclick="addToWord(this)">ी<span class="matra-sub">ई</span></button>
+        <button class="key matra-btn" data-matra="ु" onclick="addToWord(this)">ु<span class="matra-sub">उ</span></button>
+        <button class="key matra-btn" data-matra="ू" onclick="addToWord(this)">ू<span class="matra-sub">ऊ</span></button>
+        <button class="key matra-btn" data-matra="ृ" onclick="addToWord(this)">ृ<span class="matra-sub">ऋ</span></button>
+        <button class="key matra-btn" data-matra="े" onclick="addToWord(this)">े<span class="matra-sub">ए</span></button>
+        <button class="key matra-btn" data-matra="ै" onclick="addToWord(this)">ै<span class="matra-sub">ऐ</span></button>
+        <button class="key matra-btn" data-matra="ो" onclick="addToWord(this)">ो<span class="matra-sub">ओ</span></button>
+        <button class="key matra-btn" data-matra="ौ" onclick="addToWord(this)">ौ<span class="matra-sub">औ</span></button>
+        <button class="key matra-btn" data-matra="ं" onclick="addToWord(this)">ं<span class="matra-sub">अनुस्वार</span></button>
+        <button class="key matra-btn" data-matra="ः" onclick="addToWord(this)">ः<span class="matra-sub">विसर्ग</span></button>
+    </div>
+
+    <!-- दायाँ: व्यंजन + संयुक्त -->
+    <div class="varna-col" id="varnasContainer">
+        <h3 style="grid-column: span 5;">🔤 व्यंजन (Consonants) + संयुक्त</h3>
+    </div>
+</div>
+
+<div class="footer-note">⭐ सभी स्वर जोड़े गए - अ, आ, इ, ई, उ, ऊ, ऋ, ए, ऐ, ओ, औ ⭐</div>
+
+<script>
+    (function() {
+        let wordChars = ['क'];
+        const outputEl = document.getElementById('output');
+        const varnaContainer = document.getElementById('varnasContainer');
+
+        const vyanjanList = [
+            'क', 'ख', 'ग', 'घ', 'ङ',
+            'च', 'छ', 'ज', 'झ', 'ञ',
+            'ट', 'ठ', 'ड', 'ढ', 'ण',
+            'त', 'थ', 'द', 'ध', 'न',
+            'प', 'फ', 'ब', 'भ', 'म',
+            'य', 'र', 'ल', 'व', 'श',
+            'ष', 'स', 'ह', 'क्ष', 'त्र', 'ज्ञ'
+        ];
+
+        // Generate consonant buttons
+        vyanjanList.forEach(v => {
+            let btn = document.createElement('button');
+            btn.className = 'key varna-btn';
+            btn.innerText = v;
+            btn.onclick = function() {
+                addCharToWord(v);
+            };
+            varnaContainer.appendChild(btn);
+        });
+
+        function addCharToWord(ch) {
+            if (wordChars.length < 8) {
+                wordChars.push(ch);
+            }
+            updateDisplayAndSpeak();
+        }
+
+        // स्वर जोड़ने के लिए फंक्शन
+        window.addSwarToWord = function(swar) {
+            if (wordChars.length < 8) {
+                wordChars.push(swar);
+            }
+            updateDisplayAndSpeak();
+        };
+
+        // मात्रा जोड़ने के लिए
+        window.addToWord = function(button) {
+            let matra = button.getAttribute('data-matra') || '';
+            if (wordChars.length < 8) {
+                wordChars.push(matra);
+            }
+            updateDisplayAndSpeak();
+        };
+
+        window.backspace = function() {
+            if (wordChars.length > 0) {
+                wordChars.pop();
+            }
+            if (wordChars.length === 0) {
+                wordChars = [''];
+            }
+            updateDisplayAndSpeak();
+        };
+
+        window.clearAll = function() {
+            wordChars = [''];
+            updateDisplayAndSpeak();
+        };
+
+        function updateDisplayAndSpeak() {
+            let displayWord = wordChars.join('');
+            outputEl.innerText = displayWord;
+            speakText(displayWord);
+        }
+
+        window.speakCurrent = function() {
+            let text = outputEl.innerText;
+            if (text === '') text = 'खाली';
+            speakText(text);
+        };
+
+        function speakText(text) {
+            if (!text || text.trim() === '') return;
+            try {
+                window.speechSynthesis.cancel();
+                let utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'hi-IN';
+                utterance.rate = 0.6;
+                utterance.pitch = 1.2;
+
+                if (window.speechSynthesis.getVoices) {
+                    let voices = window.speechSynthesis.getVoices();
+                    if (voices.length > 0) {
+                        let hindiVoice = voices.find(v => v.lang === 'hi-IN' && v.name.includes('Google'));
+                        if (!hindiVoice) hindiVoice = voices.find(v => v.lang === 'hi-IN');
+                        if (hindiVoice) utterance.voice = hindiVoice;
+                    }
+                }
+                window.speechSynthesis.speak(utterance);
+            } catch (e) {
+                console.warn('speech error', e);
+            }
+        }
+
+        updateDisplayAndSpeak();
+        outputEl.addEventListener('click', speakCurrent);
+
+        if (window.speechSynthesis && window.speechSynthesis.getVoices) {
+            window.speechSynthesis.getVoices();
+        }
+    })();
+</script>
+</body>
+</html>
